@@ -209,7 +209,7 @@ class EMGVisualizer:
                                             color='#333333')
         
         # Spike pattern info text
-        info_text = """📈 ONE SPIKE = UP     |     📉 TWO SPIKES (short time) = DOWN"""
+        info_text = """📈 ONE SPIKE = ↑ (w)     |     📉 TWO SPIKES (short time) = ↓ (s)"""
         self.info_text = self.ax_info.text(0.5, 0.5, info_text, 
                                           fontsize=12, 
                                           ha='center', va='center',
@@ -327,15 +327,15 @@ class EMGVisualizer:
                 for bar, height in zip(self.state_bar, heights):
                     bar.set_width(height)
             
-            # Update command display
+            # Update command display with arrows and subtle letters
             if self.current_command == "UP":
-                self.command_text.set_text("⬆ UP")
+                self.command_text.set_text("↑\nw")
                 self.command_text.set_color('#FF6B35')  # Orange
             elif self.current_command == "DOWN":
-                self.command_text.set_text("⬇ DOWN")
+                self.command_text.set_text("↓\ns")
                 self.command_text.set_color('#C44C2A')  # Dark orange
             else:
-                self.command_text.set_text("IDLE")
+                self.command_text.set_text("•")
                 self.command_text.set_color('#CCCCCC')  # Gray
             
             # Update statistics panel

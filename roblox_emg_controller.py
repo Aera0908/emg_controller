@@ -79,8 +79,8 @@ class EMGRobloxController:
         
         # Threshold settings
         # HOLD_THRESHOLD_RATIO: Hold detection uses a lower threshold
-        # This should match HOLD_THRESHOLD_RATIO in Arduino code (0.6)
-        self.HOLD_THRESHOLD_RATIO = 0.6  # 60% of spike threshold for hold detection
+        # Lower ratio = easier to maintain A/D hold
+        self.HOLD_THRESHOLD_RATIO = 0.4  # 40% of spike threshold for hold detection (easier A/D)
         self.hold_threshold = 0.0  # Will be calculated from threshold
         
         # Muscle state tracking
@@ -120,7 +120,7 @@ class EMGRobloxController:
         # Pattern detection thresholds (time-based)
         self.INSTANT_THRESHOLD = 0.4  # Seconds - spikes within this are "instant"
         self.DELAYED_THRESHOLD = 1.0  # Seconds - spikes within this but > instant are "delayed"
-        self.HOLD_TIME_THRESHOLD = 0.5  # Seconds - hold for this long to switch to A/D
+        self.HOLD_TIME_THRESHOLD = 0.3  # Seconds - hold for this long to switch to A/D (reduced for easier A/D)
         
         # Threading
         self.serial_thread = None
@@ -267,22 +267,24 @@ class EMGRobloxController:
         key_card = self.create_card(top_row)
         key_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=False, padx=(10, 0), ipadx=20)
         
-        key_header = tk.Label(key_card, text="Active Key", 
+        key_header = tk.Label(key_card, text="Direction", 
                              font=("Segoe UI", 12, "bold"), 
                              bg=self.colors['card_bg'], fg=self.colors['text'])
         key_header.pack(anchor=tk.W, pady=(0, 15))
         
-        self.active_key_display = tk.Label(key_card, text="—", 
-                                          font=("Segoe UI", 48, "bold"),
+        # Arrow display (large arrow symbol)
+        self.active_key_display = tk.Label(key_card, text="•", 
+                                          font=("Segoe UI", 52, "bold"),
                                           bg=self.colors['card_bg'], fg=self.colors['text_light'],
                                           width=3)
-        self.active_key_display.pack(pady=10)
+        self.active_key_display.pack(pady=(5, 0))
         
-        self.active_key_label = tk.Label(key_card, text="None", 
-                                        font=("Segoe UI", 10),
+        # Subtle small letter label underneath
+        self.active_key_label = tk.Label(key_card, text="", 
+                                        font=("Segoe UI", 9),
                                         bg=self.colors['card_bg'], fg=self.colors['text_light'],
                                         width=10)
-        self.active_key_label.pack()
+        self.active_key_label.pack(pady=(2, 5))
         
         # Second row: EMG Signal and Graph (side by side)
         signal_graph_row = tk.Frame(main_frame, bg=self.colors['bg'])
@@ -350,10 +352,10 @@ class EMGRobloxController:
                                  bg=self.colors['card_bg'], fg=self.colors['text'])
         mapping_header.pack(anchor=tk.W, pady=(0, 10))
         
-        mapping_text = """Single Flex → W (Forward) [Holds]
-Double Flex → S (Backward) [Holds]
-Single + Hold → A (Left) [Holds]
-Double + Hold → D (Right) [Holds]
+        mapping_text = """Single Flex → ↑ (Forward) [Holds]
+Double Flex → ↓ (Backward) [Holds]
+Single + Hold → ← (Left) [Holds]
+Double + Hold → → (Right) [Holds]
 Triple Instant Flex → Stop
 Release → Stop"""
         
@@ -919,7 +921,7 @@ Release → Stop"""
             self.action_decided = False  # Whether we've decided on an action
         
         SPIKE_WINDOW = 0.5  # Window to count spikes (0.5 second - must be fast!)
-        HOLD_DELAY = 0.4    # Time after first spike to detect hold
+        HOLD_DELAY = 0.25   # Time after first spike to detect hold (reduced for easier A/D)
         
         # ===== New spike detected - always count it =====
         if spike_just_detected:
@@ -984,8 +986,8 @@ Release → Stop"""
                     self.pending_spike_count = 0
                     self.spike_times = []
         
-        # ===== A/D Lock Check: After 1 second of holding, lock it =====
-        HOLD_LOCK_DURATION = 1.0  # Hold for 1 second to lock A/D
+        # ===== A/D Lock Check: After 0.6 seconds of holding, lock it =====
+        HOLD_LOCK_DURATION = 0.6  # Hold for 0.6 second to lock A/D (reduced for easier locking)
         if self.hold_key in ['a', 'd'] and not self.indefinite_hold:
             if hasattr(self, 'hold_lock_time'):
                 if hold_active and (current_time - self.hold_lock_time) >= HOLD_LOCK_DURATION:
@@ -1144,14 +1146,17 @@ Release → Stop"""
         else:
             self.muscle_state_label.config(text="● OFF", fg=self.colors['success'])
         
-        # Update active key display
+        # Update active key display with arrows and subtle letters
+        # Arrow mapping: W=↑, S=↓, A=←, D=→
+        arrow_map = {'W': '↑', 'S': '↓', 'A': '←', 'D': '→'}
         if self.current_direction:
             key_upper = self.current_direction.upper()
-            self.active_key_display.config(text=key_upper, fg=self.colors['primary'])
-            self.active_key_label.config(text="Active", fg=self.colors['text'])
+            arrow = arrow_map.get(key_upper, '•')
+            self.active_key_display.config(text=arrow, fg=self.colors['primary'])
+            self.active_key_label.config(text=key_upper.lower(), fg=self.colors['text_light'])
         else:
-            self.active_key_display.config(text="—", fg=self.colors['text_light'])
-            self.active_key_label.config(text="None", fg=self.colors['text_light'])
+            self.active_key_display.config(text="•", fg=self.colors['text_light'])
+            self.active_key_label.config(text="", fg=self.colors['text_light'])
     
     def update_graph(self):
         """Update the EMG signal graph"""
