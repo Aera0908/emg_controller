@@ -1,0 +1,46 @@
+================================
+   FIX ARDUINO IDE CACHE ISSUE
+================================
+
+The src folder has been DELETED.
+
+BUT Arduino IDE cached the old compilation files.
+
+HOW TO FIX:
+-----------
+
+METHOD 1 (Easiest):
+1. CLOSE Arduino IDE completely
+2. Wait 5 seconds
+3. REOPEN Arduino IDE
+4. File → Open → emg_function.ino
+5. Click Upload
+6. Should work now!
+
+METHOD 2 (If Method 1 doesn't work):
+1. Close Arduino IDE
+2. Delete this folder:
+   C:\Users\Owner\AppData\Local\arduino\sketches\20ECAE1479B779D9A737148390C5E9DD
+3. Reopen Arduino IDE
+4. Upload again
+
+METHOD 3 (Nuclear option):
+In Arduino IDE:
+1. Sketch → Show Sketch Folder
+2. Close Arduino IDE
+3. Delete the "build" folder if it exists
+4. Reopen Arduino IDE
+5. Upload again
+
+================================
+   WHY THIS HAPPENED
+================================
+
+Arduino IDE compiles files into a cache folder.
+Even though we deleted src/main.cpp, the
+cached .o file still existed, causing conflicts.
+
+Restarting Arduino IDE forces a fresh build.
+
+================================
+

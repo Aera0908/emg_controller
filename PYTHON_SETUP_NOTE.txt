@@ -1,0 +1,39 @@
+=====================================
+   IMPORTANT: Python Commands
+=====================================
+
+Your system requires using:
+  python -m pip
+
+Instead of just:
+  pip
+
+This is normal for some Python installations on Windows.
+
+COMMANDS TO USE:
+---------------
+✅ Install packages:
+   python -m pip install -r requirements.txt
+
+✅ Run visualizer:
+   python emg_visualizer.py
+
+✅ Or just double-click:
+   run_visualizer.bat
+
+ALREADY INSTALLED:
+-----------------
+✅ pyserial (for serial communication)
+✅ matplotlib (for plotting)
+✅ numpy (for calculations)
+
+YOU'RE READY TO GO! 🚀
+----------------------
+1. Upload code to ESP32S3 using Arduino IDE
+2. Close Arduino Serial Monitor
+3. Double-click: run_visualizer.bat
+4. Select your COM port
+5. Keep muscle relaxed for 3 seconds
+6. Flex and watch the beautiful graphs!
+
+

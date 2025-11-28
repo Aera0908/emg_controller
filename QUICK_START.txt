@@ -1,0 +1,52 @@
+=====================================
+   EMG PROJECT - QUICK START GUIDE
+=====================================
+
+WHAT YOU NEED:
+--------------
+1. Arduino IDE (for uploading code to ESP32S3)
+2. Python (for beautiful visualization)
+3. Your ESP32S3 with EMG sensor
+
+SETUP (ONE TIME ONLY):
+----------------------
+1. Install Arduino IDE from: arduino.cc
+2. In Arduino IDE:
+   - File → Preferences → Add this URL:
+     https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+   - Tools → Board → Boards Manager → Install "esp32"
+   
+3. Install Python packages:
+   Open terminal and run: pip install -r requirements.txt
+
+UPLOAD CODE:
+-----------
+1. Open Arduino IDE
+2. File → Open → Select "emg_function.ino"
+3. Tools → Board → esp32 → ESP32S3 Dev Module
+4. Tools → Port → Select your COM port
+5. Click Upload button (→)
+6. Wait for "Done uploading"
+
+RUN VISUALIZER:
+--------------
+1. Double-click: run_visualizer.bat
+   OR
+   Run in terminal: python emg_visualizer.py
+
+2. Select your COM port from the list
+3. Keep muscle RELAXED for 3 seconds (calibration)
+4. Flex your muscle and see real-time graphs!
+
+TROUBLESHOOTING:
+---------------
+- "Can't connect": Close Arduino Serial Monitor first!
+- "No COM port": Install CH340 drivers
+- "Upload failed": Hold BOOT button while uploading
+
+WORKFLOW:
+---------
+Edit code in Cursor → Upload via Arduino IDE → View with Python visualizer
+
+That's it! The Python visualizer is what makes this project shine! 🌟
+
